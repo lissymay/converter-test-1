@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { createUserIfNotExists } from '../services/users.service';
 
 export async function userMiddleware(
@@ -7,11 +7,17 @@ export async function userMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  let userId = req.cookies.user_id;
+  let userId = req.header('x-user-id');
 
+  // если клиент не передал user_id → создаём нового
   if (!userId) {
-    userId = uuidv4();
-    res.cookie('user_id', userId, { httpOnly: true });
+    userId = uuid();
+    await createUserIfNotExists(userId);
+
+    // возвращаем клиенту новый user_id
+    res.setHeader('x-user-id', userId);
+  } else {
+    // если передал — убеждаемся что юзер существует
     await createUserIfNotExists(userId);
   }
 

@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from 'express';
-import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import crypto from 'crypto';
@@ -16,7 +15,6 @@ const app = express();
 // Парсинг JSON и cookie
 // =====================
 app.use(express.json());
-app.use(cookieParser());
 
 // =====================
 // Swagger
